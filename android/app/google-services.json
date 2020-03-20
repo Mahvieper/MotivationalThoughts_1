@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "189203704870",
+    "firebase_url": "https://motivational-thoughts-one.firebaseio.com",
+    "project_id": "motivational-thoughts-one",
+    "storage_bucket": "motivational-thoughts-one.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189203704870:android:8ad52518b3a44cc52c8ae7",
+        "android_client_info": {
+          "package_name": "com.example.motivationalthoughts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "189203704870-mshokod35e4tth1tq5fhnh150ttp9cc3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDc4fQ7c2T_NjY59KVyOxdu_6KapqoLpHA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "189203704870-mshokod35e4tth1tq5fhnh150ttp9cc3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "189203704870-0fkv3dpo1v7bevbpuc0748hcp6na7o57.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.motivationalthoughts"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
