@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:motivationalthoughts/auth/authentication.dart';
+import 'package:motivationalthoughts/screens/HomePageAdmin.dart';
 
 import 'HomePageUser.dart';
 import 'auth_screen.dart';
@@ -24,6 +25,7 @@ class _RootPageState extends State<RootPage> {
   AuthStatus authStatus = AuthStatus.NOT_DETERMINED;
   String _userId = "";
   String _userRole = "";
+  String authUserEmail = "";
 
   @override
   void initState() {
@@ -31,7 +33,7 @@ class _RootPageState extends State<RootPage> {
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         if (user != null) {
-
+          authUserEmail = user?.email;
           _userId = user?.uid;
         }
         authStatus =
@@ -55,6 +57,7 @@ class _RootPageState extends State<RootPage> {
     setState(() {
       authStatus = AuthStatus.NOT_LOGGED_IN;
       _userId = "";
+      authUserEmail = "";
     });
   }
 
@@ -84,12 +87,24 @@ class _RootPageState extends State<RootPage> {
         break;
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
-          return new HomePageUser(
-            userId: _userId,
-            auth: widget.auth,
-            logoutCallback: logoutCallback,
-          );
-        } else
+
+          if(authUserEmail.contains("vmahesh161@gmail.com")) {
+            return new HomePageAdmin(
+              userId: _userId,
+              auth: widget.auth,
+              logoutCallback: logoutCallback,
+            );
+          } else {
+            return new HomePageUser(
+              userId: _userId,
+              auth: widget.auth,
+              logoutCallback: logoutCallback,
+            );
+          }
+
+        }
+
+        else
           return buildWaitingScreen();
         break;
       default:
