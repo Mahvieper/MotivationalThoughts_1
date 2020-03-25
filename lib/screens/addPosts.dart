@@ -17,6 +17,8 @@ class _AddPostState extends State<AddPost> {
   final textAreaController = TextEditingController();
 //save the result of camera file
   File cameraFile;
+
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
 
@@ -31,6 +33,8 @@ class _AddPostState extends State<AddPost> {
       setState(() {});
     }
 
+
+    //Button to slect image from gallary
     Widget _imageSelector() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -74,10 +78,17 @@ class _AddPostState extends State<AddPost> {
             SizedBox(height: 10,),
               _textArea(),
               SizedBox(height: 10,),
-              RaisedButton(child: Text("Add thought"),
+             isLoading ? Center(child: CircularProgressIndicator()) : RaisedButton(child: Text("Add thought"),
               onPressed: () {
+               setState(() {
+                 isLoading = true;
+               });
                 if( galleryFile !=null && textAreaController.text.isNotEmpty) {
-                  _uploadImageToFirebase(galleryFile);
+                  _uploadImageToFirebase(galleryFile).whenComplete(() {
+                    setState(() {
+                      isLoading = false;
+                    });
+                  });
                 } else {
                   showDialog(
                       context: context,
@@ -128,7 +139,7 @@ class _AddPostState extends State<AddPost> {
             builder: (context) {
               return AlertDialog(
                 title: Text("Alert"),
-                content: Text("Task Uploaded"),
+                content: Text("Post Uploaded"),
               );
             }
         );
@@ -145,7 +156,7 @@ class _AddPostState extends State<AddPost> {
       var imageString = await ref.getDownloadURL();
 
       // Add location and url to database
-      await Firestore.instance.collection('Posts').document().setData({'image':imageString , 'description':textAreaController.text.toString()});
+      await Firestore.instance.collection('Posts').document().setData({'image':imageString , 'description':textAreaController.text.toString(),'createdAt' : Timestamp.now()});
     }catch(e){
       print(e.message);
       showDialog(

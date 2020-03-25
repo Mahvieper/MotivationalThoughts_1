@@ -12,8 +12,10 @@ void main() => runApp(new MaterialApp(home:MyApp(),
   },
   debugShowCheckedModeBanner: false,
   theme: ThemeData(
-      primarySwatch: Colors.teal,
-      backgroundColor: Colors.teal
+
+    brightness: Brightness.light,
+    primaryColor: Colors.lightBlue[800],
+    accentColor: Colors.cyan[600],
   ),
 ));
 

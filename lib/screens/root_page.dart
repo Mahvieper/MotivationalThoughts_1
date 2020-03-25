@@ -46,6 +46,16 @@ class _RootPageState extends State<RootPage> {
     widget.auth.getCurrentUser().then((user) {
       setState(() {
         _userId = user.uid.toString();
+        widget.auth.getCurrentUser().then((user) {
+          setState(() {
+            if (user != null) {
+              authUserEmail = user?.email;
+              _userId = user?.uid;
+            }
+            authStatus =
+            user?.uid == null ? AuthStatus.NOT_LOGGED_IN : AuthStatus.LOGGED_IN;
+          });
+        });
       });
     });
     setState(() {
@@ -88,7 +98,7 @@ class _RootPageState extends State<RootPage> {
       case AuthStatus.LOGGED_IN:
         if (_userId.length > 0 && _userId != null) {
 
-          if(authUserEmail.contains("vmahesh161@gmail.com")) {
+          if(authUserEmail.contains("vmahesh161@gmail.com") || authUserEmail.contains("prdookie@gmail.com")) {
             return new HomePageAdmin(
               userId: _userId,
               auth: widget.auth,
