@@ -1,5 +1,7 @@
 import 'dart:io';
 
+//import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:motivationalthoughts/main.dart';
 import 'package:motivationalthoughts/screens/addPosts.dart';
 import 'package:motivationalthoughts/screens/feature_selection.dart';
 import 'package:snaplist/snaplist.dart';
+import 'package:video_player/video_player.dart';
 
 import 'about_us.dart';
 import 'contact_us.dart';
@@ -26,11 +29,19 @@ class HomePageAdmin extends StatefulWidget {
 }
 
 class _HomePageAdminState extends State<HomePageAdmin> {
+  VideoPlayerController _controller;
   var ourData;
   AudioPlayer audioPlayer = AudioPlayer();
   AudioPlayer audioPlayer1 = new AudioPlayer();
+  AudioPlayer localAudioPlayer = new AudioPlayer();
+  Future snapShot;
   String backAudioPath= "https://firebasestorage.googleapis.com/v0/b/motivational-thoughts-one.appspot.com/o/audio%2FbackMusic.mp3?alt=media&token=77f8de09-90eb-4885-b1b9-591b19de3c14";
-  //final VoidCallback loadMore;
+
+
+  bool soundIconOn = true;
+  AudioCache player ;
+
+
   void _showDialog() {
     // flutter defined function
     showDialog(
@@ -87,6 +98,27 @@ class _HomePageAdminState extends State<HomePageAdmin> {
     );
   }
 
+
+  @override
+  void initState() {
+    super.initState();
+    // Pointing the video controller to our local asset.
+    snapShot = getPosts();
+
+    player = AudioCache(fixedPlayer: localAudioPlayer);
+    player.loop('oceanSound.mp3');
+    //player.play('oceanSound.mp3');
+
+    _controller = VideoPlayerController.asset("assets/OceanBackground.mp4")
+      ..initialize().then((_) {
+        // Once the video has been loaded we play the video and set looping to true.
+        _controller.play();
+        _controller.setLooping(true);
+        // Ensure the first frame is shown after the video is initialized.
+        setState(() {});
+      });
+  }
+
   @override
   Widget build(BuildContext context) {
     final Size cardSize = Size(MediaQuery.of(context).size.width * 0.97,
@@ -97,6 +129,24 @@ class _HomePageAdminState extends State<HomePageAdmin> {
         centerTitle: true,
         actions: <Widget>[
           //Logout
+          soundIconOn ? IconButton(
+            icon: new Image.asset('assets/soundUnmuted.png',color: Colors.white,fit: BoxFit.scaleDown,),
+            onPressed: () {
+              setState(() {
+                soundIconOn = !soundIconOn;
+                localAudioPlayer.pause();
+              });
+            },
+          ) : IconButton(
+            icon: new Image.asset('assets/soundMuted.png', color: Colors.white,),
+            tooltip: 'Closes application',
+            onPressed: () {
+              setState(() {
+                soundIconOn = !soundIconOn;
+                localAudioPlayer.resume();
+              });
+            },
+          ),
           Padding(
             padding: const EdgeInsets.all(15.0),
             child: InkWell(
@@ -113,7 +163,7 @@ class _HomePageAdminState extends State<HomePageAdmin> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Image.asset("assets/SplashLogo.png"),
+              child: Image.asset("assets/MindRenewal.png"),
               decoration: BoxDecoration(),
             ),
             Container(
@@ -164,9 +214,23 @@ class _HomePageAdminState extends State<HomePageAdmin> {
 
       body: Stack(
         children: <Widget>[
-          _backgroundImage(),
+         // _backgroundImage(),
+
+          SizedBox.expand(
+            child: FittedBox(
+              // If your background video doesn't look right, try changing the BoxFit property.
+              // BoxFit.fill created the look I was going for.
+              fit: BoxFit.fill,
+              child: SizedBox(
+                width: _controller.value.size?.width ?? 0,
+                height: _controller.value.size?.height ?? 0,
+                child: VideoPlayer(_controller),
+              ),
+            ),
+          ),
+
           FutureBuilder(
-            future: getPosts(),
+            future: snapShot,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(

@@ -132,7 +132,7 @@ class _HomePageUserState extends State<HomePageUser> {
       backgroundColor: Colors.deepPurple,
       appBar: AppBar(
         backgroundColor: Color(282032),
-        title: Text("Yor are Awesome"),
+        title: Text("You are Awesome"),
         centerTitle: true,
         actions: <Widget>[
           Padding(
@@ -151,7 +151,7 @@ class _HomePageUserState extends State<HomePageUser> {
           padding: EdgeInsets.zero,
           children: <Widget>[
             DrawerHeader(
-              child: Image.asset("assets/SplashLogo.png"),
+              child: Image.asset("assets/MindRenewal.png"),
               decoration: BoxDecoration(),
             ),
             Container(

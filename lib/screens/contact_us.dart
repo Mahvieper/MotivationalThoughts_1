@@ -29,7 +29,7 @@ class ContactUsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                Image.asset("assets/SplashLogo.png"),
+                Image.asset("assets/MindRenewal.png"),
                 SizedBox(height: 10,),
                 Container(
                     padding: EdgeInsets.all(10),
