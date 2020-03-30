@@ -66,42 +66,44 @@ class _AddPostState extends State<AddPost> {
 
     return Scaffold(
       appBar: AppBar(title: Text("Add Motivational Thought"),),
-      resizeToAvoidBottomInset : false,
       body: Center(
         child: Container(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              _imageSelector(),
-              SizedBox(height: 20,),
-        displaySelectedFile(galleryFile),
-            SizedBox(height: 10,),
-              _textArea(),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _imageSelector(),
+                SizedBox(height: 20,),
+               displaySelectedFile(galleryFile),
               SizedBox(height: 10,),
-             isLoading ? Center(child: CircularProgressIndicator()) : RaisedButton(child: Text("Add thought"),
-              onPressed: () {
-               setState(() {
-                 isLoading = true;
-               });
-                if( galleryFile !=null && textAreaController.text.isNotEmpty) {
-                  _uploadImageToFirebase(galleryFile).whenComplete(() {
-                    setState(() {
-                      isLoading = false;
+                _textArea(),
+                SizedBox(height: 10,),
+               isLoading ? Center(child: CircularProgressIndicator()) : RaisedButton(child: Text("Add thought"),
+                onPressed: () {
+                 setState(() {
+                   isLoading = true;
+                 });
+                  if( galleryFile !=null && textAreaController.text.isNotEmpty) {
+                    _uploadImageToFirebase(galleryFile).whenComplete(() {
+                      setState(() {
+                        isLoading = false;
+                      });
                     });
-                  });
-                } else {
-                  showDialog(
-                      context: context,
-                      builder: (context) {
-                        return AlertDialog(
-                          title: Text("Alert"),
-                          content: Text("Please check if Image and Quote have been entered Correctly..!"),
-                        );
-                      }
-                  );
-                }
-              },)
-            ],
+                  } else {
+                    showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            title: Text("Alert"),
+                            content: Text("Please check if Image and Quote have been entered Correctly..!"),
+                          );
+                        }
+                    );
+                  }
+                },)
+                ,
+              ],
+            ),
           ),
         ),
       ),

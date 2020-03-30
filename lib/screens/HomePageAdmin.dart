@@ -1,46 +1,51 @@
 import 'dart:io';
-
 //import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_swiper/flutter_swiper.dart';
 import 'package:motivationalthoughts/auth/authentication.dart';
-import 'package:flutter_tindercard/flutter_tindercard.dart';
-import 'package:motivationalthoughts/main.dart';
-import 'package:motivationalthoughts/screens/addPosts.dart';
-import 'package:motivationalthoughts/screens/feature_selection.dart';
-import 'package:snaplist/snaplist.dart';
+
 import 'package:video_player/video_player.dart';
 
 import 'about_us.dart';
+import '../bible/bible_page.dart';
 import 'contact_us.dart';
+import 'home_selection_screen.dart';
 
 class HomePageAdmin extends StatefulWidget {
-  HomePageAdmin({Key key, this.auth, this.userId, this.logoutCallback})
+  HomePageAdmin(
+      {Key key, this.auth, this.userId, this.logoutCallback, this.isAdmin})
       : super(key: key);
 
   final BaseAuth auth;
   final VoidCallback logoutCallback;
   final String userId;
+  final bool isAdmin;
 
   @override
   _HomePageAdminState createState() => _HomePageAdminState();
 }
 
 class _HomePageAdminState extends State<HomePageAdmin> {
-  VideoPlayerController _controller;
+  VideoPlayerController _controller, _controller1, _controller2, _controller3,_controller4;
   var ourData;
-  AudioPlayer audioPlayer = AudioPlayer();
-  AudioPlayer audioPlayer1 = new AudioPlayer();
   AudioPlayer localAudioPlayer = new AudioPlayer();
   Future snapShot;
-  String backAudioPath= "https://firebasestorage.googleapis.com/v0/b/motivational-thoughts-one.appspot.com/o/audio%2FbackMusic.mp3?alt=media&token=77f8de09-90eb-4885-b1b9-591b19de3c14";
-
-
   bool soundIconOn = true;
-  AudioCache player ;
+  AudioCache player;
+  List<String> assetsList = [
+    "assets/RainDown.mp4",
+    "assets/OceanBackground.mp4",
+    "assets/CalmNature.mp4",
+    "assets/MountNature.mp4",
+    "assets/fire.mp4"
+  ];
 
+  VideoPlayerController _controllerSwiper;
+
+  int oneTime = 0;
 
   void _showDialog() {
     // flutter defined function
@@ -74,19 +79,6 @@ class _HomePageAdminState extends State<HomePageAdmin> {
     );
   }
 
-  Future getPosts() async {
-    var firestore = Firestore.instance;
-    QuerySnapshot snapshot = await firestore.collection("Posts").orderBy('createdAt', descending: true).getDocuments();
-    return snapshot.documents;
-  }
-
-  Future<Null> getRefresh() async {
-    await Future.delayed(Duration(seconds: 3));
-    setState(() {
-      getPosts();
-    });
-  }
-
   Widget _backgroundImage() {
     return Container(
       decoration: BoxDecoration(
@@ -98,440 +90,408 @@ class _HomePageAdminState extends State<HomePageAdmin> {
     );
   }
 
-
   @override
   void initState() {
     super.initState();
     // Pointing the video controller to our local asset.
-    snapShot = getPosts();
 
     player = AudioCache(fixedPlayer: localAudioPlayer);
     player.loop('oceanSound.mp3');
     //player.play('oceanSound.mp3');
-
-    _controller = VideoPlayerController.asset("assets/OceanBackground.mp4")
+    _controller1 = VideoPlayerController.asset("assets/RainDown.mp4")
       ..initialize().then((_) {
         // Once the video has been loaded we play the video and set looping to true.
-        _controller.play();
-        _controller.setLooping(true);
+
+        _controller1.setLooping(true);
+
         // Ensure the first frame is shown after the video is initialized.
-        setState(() {});
       });
+    _controller2 = VideoPlayerController.asset("assets/CalmNature.mp4")
+      ..initialize().then((_) {
+        // Once the video has been loaded we play the video and set looping to true.
+        ////_controller.play();
+        _controller2.setLooping(true);
+        // Ensure the first frame is shown after the video is initialized.
+        // setState(() {});
+      });
+    _controller3 = VideoPlayerController.asset("assets/MountNature.mp4")
+      ..initialize().then((_) {
+        // Once the video has been loaded we play the video and set looping to true.
+        //_controller.play();
+        _controller3.setLooping(true);
+        // Ensure the first frame is shown after the video is initialized.
+        // setState(() {});
+      });
+    _controller4 = VideoPlayerController.asset("assets/fire.mp4")
+      ..initialize().then((_) {
+        // Once the video has been loaded we play the video and set looping to true.
+        ////_controller.play();
+        _controller4.setLooping(true);
+        // Ensure the first frame is shown after the video is initialized.
+        // setState(() {});
+      });
+    _controller = VideoPlayerController.asset("assets/OceanBackground.mp4")
+      ..initialize().then((_) {
+         _controller.play();
+        _controller.setLooping(true);
+        _controllerSwiper = _controller;
+        localAudioPlayer.resume();
+         setState(() {});
+      });
+    _controllerSwiper = _controller;
   }
+
+  pauseAllVideoAudio() {
+    localAudioPlayer.setVolume(0);
+    _controller.setVolume(0);
+    _controller1.setVolume(0);
+    _controller2.setVolume(0);
+    _controller3.setVolume(0);
+    _controller4.setVolume(0);
+  }
+
+ resumeAllVideoAudio() {
+   localAudioPlayer.setVolume(1);
+    _controller.setVolume(1);
+    _controller1.setVolume(1);
+    _controller2.setVolume(1);
+    _controller3.setVolume(1);
+    _controller4.setVolume(1);
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    final Size cardSize = Size(MediaQuery.of(context).size.width * 0.97,
-        MediaQuery.of(context).size.height * 0.8);
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Welcome Dr.Dookie"),
-        centerTitle: true,
-        actions: <Widget>[
-          //Logout
-          soundIconOn ? IconButton(
-            icon: new Image.asset('assets/soundUnmuted.png',color: Colors.white,fit: BoxFit.scaleDown,),
-            onPressed: () {
-              setState(() {
-                soundIconOn = !soundIconOn;
-                localAudioPlayer.pause();
-              });
-            },
-          ) : IconButton(
-            icon: new Image.asset('assets/soundMuted.png', color: Colors.white,),
-            tooltip: 'Closes application',
-            onPressed: () {
-              setState(() {
-                soundIconOn = !soundIconOn;
-                localAudioPlayer.resume();
-              });
-            },
+
+        drawer: Drawer(
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Image.asset("assets/MindRenewal.png"),
+                decoration: BoxDecoration(
+                  color: Colors.white
+                ),
+              ),
+              //Home Page
+             /* Container(
+                color: Colors.white,
+                child: ListTile(
+                  leading: Icon(Icons.home),
+                  title: Text(
+                    'Home',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) =>
+                            HomePageSelection(isAdmin: widget.isAdmin)));
+                    // Update the state of the app.
+                    // ...
+                  },
+                ),
+              ),*/
+              //About Us Page
+              Container(
+                color: Colors.blue,
+                child: ListTile(
+                  title: Text(
+                    'About Us',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) => AboutPage()));
+                    // Update the state of the app.
+                    // ...
+                  },
+                ),
+              ),
+              //Contact Us Page
+              Container(
+                color: Colors.blue,
+                child: ListTile(
+                  title: Text(
+                    'Contact Us',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onTap: () {
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) => ContactUsPage()));
+                    // Update the state of the app.
+                    // ...
+                  },
+                ),
+              ),
+              //Exit Option
+              Container(
+                color: Colors.blue,
+                child: ListTile(
+                  title: Text('Exit', style: TextStyle(color: Colors.white)),
+                  onTap: () {
+                    exit(0);
+                    // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                    // Update the state of the app.
+                    // ...
+                  },
+                ),
+              )
+            ],
           ),
-          Padding(
-            padding: const EdgeInsets.all(15.0),
-            child: InkWell(
-                onTap: () {
-                  _showDialog();
-                },
-                child: Icon(Icons.exit_to_app)),
-          )
-        ],
-      ),
-      drawer: Drawer(
-        child: ListView(
-          // Important: Remove any padding from the ListView.
-          padding: EdgeInsets.zero,
-          children: <Widget>[
-            DrawerHeader(
-              child: Image.asset("assets/MindRenewal.png"),
-              decoration: BoxDecoration(),
-            ),
-            Container(
-              color: Colors.blue,
-              child: ListTile(
-                title: Text(
-                  'About Us',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                      new MaterialPageRoute(builder: (context) => AboutPage()));
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ),
-            Container(
-              color: Colors.blue,
-              child: ListTile(
-                title: Text(
-                  'Contact Us',
-                  style: TextStyle(color: Colors.white),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                      new MaterialPageRoute(builder: (context) => ContactUsPage()));
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            ),
-            Container(
-              color: Colors.blue,
-              child: ListTile(
-                title: Text('Exit', style: TextStyle(color: Colors.white)),
-                onTap: () {
-                  exit(0);
-                  // SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-                  // Update the state of the app.
-                  // ...
-                },
-              ),
-            )
-          ],
         ),
-      ),
+        body: Stack(
+          children: <Widget>[
+            Swiper(
+              itemBuilder: (BuildContext context, int index) {
+                /*switch (index) {
+                  case 0:
+                    _controllerSwiper = _controller;
+                    _controllerSwiper.play();
+                    localAudioPlayer.resume();
+                    break;
+                  case 1:
+                    _controllerSwiper.pause();
+                    _controllerSwiper = _controller1;
+                    _controllerSwiper.play();
 
-      body: Stack(
-        children: <Widget>[
-         // _backgroundImage(),
+                    break;
+                  case 2:
+                    _controllerSwiper.pause();
+                    _controllerSwiper = _controller2;
+                    _controllerSwiper.play();
+                    break;
+                  case 3:
+                    _controllerSwiper.pause();
+                    _controllerSwiper = _controller3;
+                    _controllerSwiper.play();
+                    break;
+                  case 4:
+                    _controllerSwiper.pause();
+                    _controllerSwiper = _controller4;
+                    _controllerSwiper.play();
+                    break;
+                }*/
 
-          SizedBox.expand(
-            child: FittedBox(
-              // If your background video doesn't look right, try changing the BoxFit property.
-              // BoxFit.fill created the look I was going for.
-              fit: BoxFit.fill,
-              child: SizedBox(
-                width: _controller.value.size?.width ?? 0,
-                height: _controller.value.size?.height ?? 0,
-                child: VideoPlayer(_controller),
+
+                return new SizedBox.expand(
+                    child: FittedBox(
+                  // If your background video doesn't look right, try changing the BoxFit property.
+                  // BoxFit.fill created the look I was going for.
+                  fit: BoxFit.fill,
+                  child: SizedBox(
+                    width: _controllerSwiper.value.size?.width ?? 0,
+                    height: _controllerSwiper.value.size?.height ?? 0,
+                    child: VideoPlayer(_controllerSwiper),
+                  ),
+                ));
+              },
+              //indicatorLayout: PageIndicatorLayout.COLOR
+
+              onIndexChanged: (int index) {
+                //_controllerSwiper.pause();
+                if(index == 0) {
+                  _controllerSwiper.pause();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                  localAudioPlayer.setVolume(1);
+                  localAudioPlayer.resume();
+                }
+
+                if(index == 1) {
+                  localAudioPlayer.pause();
+                  _controllerSwiper.pause();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller1;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                }
+                else if(index ==2) {
+                  _controllerSwiper.pause();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller2;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                } else if(index == 3) {
+                  _controllerSwiper.pause();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller3;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                } else if(index ==4) {
+                  _controllerSwiper.pause();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller4;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                } else {
+                  localAudioPlayer.resume();
+                  _controllerSwiper.setVolume(0);
+                  _controllerSwiper = _controller;
+                  _controllerSwiper.setVolume(1);
+                  _controllerSwiper.play();
+                }
+                setState(() {});
+              },
+              autoplay: false,
+              itemCount: assetsList.length,
+              //pagination: new SwiperPagination(),
+              //control: new SwiperControl(),
+            ),
+
+            new Positioned( //Place it at the top, and not use the entire screen
+              top: 0.0,
+              left: 0.0,
+              right: 0.0,
+              child: AppBar(
+                backgroundColor: Colors.transparent,
+                title: widget.isAdmin
+                    ? Text("Welcome Dr.Dookie")
+                    : Text("You are Awesome"),
+                centerTitle: true,
+                actions: <Widget>[
+               /*   //Logout
+                  soundIconOn
+                      ? IconButton(
+                    icon: new Image.asset(
+                      'assets/soundUnmuted.png',
+                      color: Colors.white,
+                      fit: BoxFit.scaleDown,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        soundIconOn = !soundIconOn;
+                        pauseAllVideoAudio();
+                        localAudioPlayer.pause();
+                      });
+                    },
+                  )
+                      : IconButton(
+                    icon: new Image.asset(
+                      'assets/soundMuted.png',
+                      color: Colors.white,
+                    ),
+                    tooltip: 'Closes application',
+                    onPressed: () {
+                      setState(() {
+                        soundIconOn = !soundIconOn;
+                        resumeAllVideoAudio();
+                        localAudioPlayer.resume();
+                      });
+                    },
+                  ),*/
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: InkWell(
+                        onTap: () {
+                          pauseAllVideoAudio();
+                          _showDialog();
+                        },
+                        child: Icon(Icons.exit_to_app)),
+                  )
+                ],
+              ),),
+
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    decoration: new BoxDecoration(
+                      borderRadius:
+                      BorderRadius.all(Radius.circular(85.0)),
+                      color: Colors.white60
+                    ),
+                    margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
+                    child: ListTile(
+                      leading: Icon(Icons.bubble_chart),
+                      title: Text(
+                        "Meditation",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Prata'),
+                      ),
+                      subtitle: Text(
+                        "Focus",
+                        style: TextStyle(color: Colors.black, fontSize: 15 ,fontFamily: 'Prata'),
+                      ),
+                    ),
+                  ),
+                  Divider(), //
+                  InkWell(
+                    onTap: () {
+                      pauseAllVideoAudio();
+                      setState(() {});
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (context) {
+                           return HomePageSelection(isAdmin: widget.isAdmin);
+                          }
+                      ));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
+                      decoration: new BoxDecoration(
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(85.0)),
+                          color: Colors.white60
+                      ),
+                      child: ListTile(
+                        leading: Icon(Icons.bubble_chart),
+                        title: Text(
+                          "Thoughts",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold, fontFamily: 'Prata'),
+                        ),
+                        subtitle: Text(
+                          "Get Daily Thoughts",
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: 'Prata'),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  InkWell(
+                    onTap: () {
+                      pauseAllVideoAudio();
+                      setState(() {});
+                      Navigator.of(context).push(new MaterialPageRoute(
+                          builder: (context) {
+                            return BiblePage();
+                          }
+                      ));
+                    },
+                    child: Container(
+                      margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
+                      decoration: new BoxDecoration(
+                          borderRadius:
+                          BorderRadius.all(Radius.circular(85.0)),
+                          color: Colors.white60
+                      ),
+                      child: ListTile(
+                        leading: Icon(Icons.bubble_chart),
+                        title: Text(
+                          "Bible",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold, fontFamily: 'Prata'),
+                        ),
+                        subtitle: Text(
+                          "Get Daily Bible verses",
+                          style: TextStyle(color: Colors.black, fontSize: 15, fontFamily: 'Prata'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
-          ),
-
-          FutureBuilder(
-            future: snapShot,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else {
-                return RefreshIndicator(
-                  onRefresh: getRefresh,
-                  child: SnapList(
-                    padding: EdgeInsets.only(
-                        left: (MediaQuery.of(context).size.width -
-                                cardSize.width) /
-                            2),
-                    sizeProvider: (index, data) => cardSize,
-                    separatorProvider: (index, data) => Size(10.0, 10.0),
-                    positionUpdate: (int index) {
-                      if (index == snapshot.data.length - 1) {
-                        // loadMore();
-                      }
-                    },
-                    builder: (context, index, data) {
-                      ourData = snapshot.data[index];
-                     String check =  ourData.data.toString();
-                    return (check.contains("image") ?
-                    _getImageTextPosts(index,ourData) :  _getAudioPosts(index,ourData));
-                    },
-                    count: snapshot.data.length,
-                  ),
-                );
-              }
-            },
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Add your onPressed code here!
-          Navigator.of(context)
-              .push(new MaterialPageRoute(builder: (context) => FeatureSelection()));
-        },
-        child: Icon(Icons.add),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-
-  Widget _getImageTextPosts(int index,var ourData) {
-    return ClipRRect(
-        borderRadius: new BorderRadius.circular(16.0),
-        child: Container(
-          color: Colors.black26,
-          child: Column(
-            children: <Widget>[
-              index == 0
-                  ? Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04),
-                  child: Text(
-                    "Thought of the Day",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                  ))
-                  : Text(""),
-              Container(
-                height:
-                MediaQuery.of(context).size.height * 0.4,
-                width:
-                MediaQuery.of(context).size.width * 0.9,
-                padding: EdgeInsets.all(5),
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-                child: ClipRRect(
-                  borderRadius:
-                  new BorderRadius.circular(16.0),
-                  child: Image.network(
-                    ourData.data['image'],
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                child: Container(
-                    padding: EdgeInsets.all( MediaQuery.of(context).size.height *
-                        0.02),
-                    child: Column(
-                      children: <Widget>[
-                        Text(
-                            ourData.data['description'],
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20,
-                                fontFamily: 'Prata')
-                        ),
-                        SizedBox(
-                          height: 1,
-                        ),
-                        Align(
-                            alignment: Alignment.bottomRight,
-                            child: Padding(
-                              padding:
-                              const EdgeInsets.all(8.0),
-                              child: Text(
-                                " \n- Dr.Courtney",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'Prata'),
-                              ),
-                            ))
-                      ],
-                    )),
-              )
-            ],
-          ),
+          ],
         ));
-  }
-
-  Widget _getAudioPosts(int index,var ourData) {
-    return ClipRRect(
-        borderRadius: new BorderRadius.circular(16.0),
-        child: Container(
-          color: Colors.black26,
-          child: Column(
-            children: <Widget>[
-              index == 0
-                  ? Container(
-                  padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.04),
-                  child: Text(
-                    "Thought of the Day",
-                    style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                        fontSize: 20),
-                  ))
-                  : Text(""),
-              Container(
-                height:
-                MediaQuery.of(context).size.height * 0.4,
-                width:
-                MediaQuery.of(context).size.width * 0.9,
-                padding: EdgeInsets.all(5),
-                margin: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.02),
-                child: ClipRRect(
-                  borderRadius:
-                  new BorderRadius.circular(16.0),
-                  child: Image.asset(
-                    "assets/Courtney.png",
-                    fit: BoxFit.contain,
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 10,
-              ),
-              Expanded(
-                child: Container(
-                    padding: EdgeInsets.all( MediaQuery.of(context).size.height *
-                        0.02),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        RaisedButton(
-                          onPressed: () {
-                            _playAudio(ourData.data['audio'].toString());
-                          },
-                          textColor: Colors.white,
-                          padding: const EdgeInsets.all(0.0),
-                          elevation: 5,
-                          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: <Color>[
-                                    Color(0xFF0D47A1),
-                                    Color(0xFF1976D2),
-                                    Color(0xFF42A5F5),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(80.0))
-                            ),
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: const Text(
-                                'Play',
-                                style: TextStyle(fontSize: 20)
-                            ),
-                          ),
-
-                        ),
-                        SizedBox(width: 10,),
-                        RaisedButton(
-                          onPressed: () {
-                            _pauseAudio();
-                          },
-                          textColor: Colors.white,
-                          padding: const EdgeInsets.all(0.0),
-                          elevation: 5,
-                          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: <Color>[
-                                    Color(0xFF0D47A1),
-                                    Color(0xFF1976D2),
-                                    Color(0xFF42A5F5),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(80.0))
-                            ),
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: const Text(
-                                'Pause',
-                                style: TextStyle(fontSize: 20)
-                            ),
-                          ),
-
-                        ),
-                        SizedBox(width: 10,),
-                        RaisedButton(
-                          onPressed: () {
-                            _resumeAudio();
-                          },
-                          textColor: Colors.white,
-                          padding: const EdgeInsets.all(0.0),
-                          elevation: 5,
-                          shape:RoundedRectangleBorder(borderRadius: BorderRadius.circular(80.0)),
-                          child: Container(
-                            decoration: const BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: <Color>[
-                                    Color(0xFF0D47A1),
-                                    Color(0xFF1976D2),
-                                    Color(0xFF42A5F5),
-                                  ],
-                                ),
-                                borderRadius: BorderRadius.all(Radius.circular(80.0))
-                            ),
-                            padding: const EdgeInsets.fromLTRB(20, 10, 20, 10),
-                            child: const Text(
-                                'Resume',
-                                style: TextStyle(fontSize: 20)
-                            ),
-                          ),
-                        )
-                      ],
-                    )),
-              )
-            ],
-          ),
-        ));
-  }
-
-  _playAudioLocal(String url) {
-    play() async {
-      int result = await audioPlayer1.play(url,volume: 0.3);
-      if (result == 1) {
-        // success
-      }
-    }
-
-    play();
-
-    //audioPlayer.play(recordFilePath, isLocal: false);
-  }
-
-  _playAudio(String url) {
-    audioPlayer.release();
-    audioPlayer1.release();
-    audioPlayer.dispose();
-    audioPlayer1.dispose();
-    audioPlayer = null;
-    audioPlayer1 = null;
-    audioPlayer = new AudioPlayer();
-    audioPlayer1 = new AudioPlayer();
-    play() async {
-      int result = await audioPlayer.play(url);
-      if (result == 1) {
-        // success
-      }
-    }
-
-    play();
-    audioPlayer.onPlayerCompletion.listen((event) {
-      audioPlayer1.pause();
-    });
-
-    _playAudioLocal(backAudioPath);
-    //audioPlayer.play(recordFilePath, isLocal: false);
-  }
-
-  _pauseAudio() {
-    audioPlayer.pause();
-    audioPlayer1.pause();
-  }
-
-  _resumeAudio() {
-    audioPlayer.resume();
-    audioPlayer1.resume();
   }
 
   customDialog(BuildContext context, String img, String des) {

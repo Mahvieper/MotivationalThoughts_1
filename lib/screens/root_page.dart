@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:motivationalthoughts/auth/authentication.dart';
 import 'package:motivationalthoughts/screens/HomePageAdmin.dart';
-
-import 'HomePageUser.dart';
+import 'package:motivationalthoughts/bible/bible_page.dart';
 import 'auth_screen.dart';
 
 
@@ -103,12 +102,14 @@ class _RootPageState extends State<RootPage> {
               userId: _userId,
               auth: widget.auth,
               logoutCallback: logoutCallback,
+              isAdmin : true,
             );
           } else {
-            return new HomePageUser(
+            return new HomePageAdmin(
               userId: _userId,
               auth: widget.auth,
               logoutCallback: logoutCallback,
+              isAdmin : false,
             );
           }
 
