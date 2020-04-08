@@ -13,6 +13,7 @@ import 'about_us.dart';
 import '../bible/bible_page.dart';
 import 'contact_us.dart';
 import 'home_selection_screen.dart';
+import 'meditate/meditate_home_page.dart';
 
 class HomePageAdmin extends StatefulWidget {
   HomePageAdmin(
@@ -399,23 +400,30 @@ class _HomePageAdminState extends State<HomePageAdmin> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    decoration: new BoxDecoration(
-                      borderRadius:
-                      BorderRadius.all(Radius.circular(85.0)),
-                      color: Colors.white60
-                    ),
-                    margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
-                    child: ListTile(
-                      leading: Icon(Icons.bubble_chart),
-                      title: Text(
-                        "Meditation",
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Prata'),
+                  InkWell(
+                    onTap: () {
+                      pauseAllVideoAudio();
+                      setState(() {});
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (context) =>MeditatePage()));
+                    },
+                    child: Container(
+                      decoration: new BoxDecoration(
+                        borderRadius:
+                        BorderRadius.all(Radius.circular(85.0)),
+                        color: Colors.white60
                       ),
-                      subtitle: Text(
-                        "Focus",
-                        style: TextStyle(color: Colors.black, fontSize: 15 ,fontFamily: 'Prata'),
+                      margin: EdgeInsets.fromLTRB(30, 0, 30, 20),
+                      child: ListTile(
+                        leading: Icon(Icons.bubble_chart),
+                        title: Text(
+                          "Meditation",
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Prata'),
+                        ),
+                        subtitle: Text(
+                          "Focus",
+                          style: TextStyle(color: Colors.black, fontSize: 15 ,fontFamily: 'Prata'),
+                        ),
                       ),
                     ),
                   ),
