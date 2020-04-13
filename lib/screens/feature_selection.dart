@@ -11,9 +11,10 @@ class _FeatureSelectionState extends State<FeatureSelection> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Selection a Feature"),
-      centerTitle: true,),
-
+      appBar: AppBar(
+        title: Text("Selection a Feature"),
+        centerTitle: true,
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -23,25 +24,37 @@ class _FeatureSelectionState extends State<FeatureSelection> {
               child: Wrap(
                 direction: Axis.horizontal,
                 children: <Widget>[
-                  Text("Please Select the choice of Content you want to upload",style: TextStyle(fontSize:14,fontWeight: FontWeight.bold)),
+                  Text("Please Select the choice of Content you want to upload",
+                      style:
+                          TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
                 ],
               ),
             ),
-            SizedBox(height: 30,),
+            SizedBox(
+              height: 30,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 RaisedButton(
+                  color: Colors.cyan,
+                  textColor: Colors.white,
                   child: Text("Image/Text"),
                   onPressed: () {
-                    Navigator.of(context).push(new MaterialPageRoute(builder: (context) => AddPost()));
+                    Navigator.of(context).push(
+                        new MaterialPageRoute(builder: (context) => AddPost()));
                   },
                 ),
-                SizedBox(width: 30,),
+                SizedBox(
+                  width: 30,
+                ),
                 RaisedButton(
+                  color: Colors.cyan,
+                  textColor: Colors.white,
                   child: Text("Audio"),
                   onPressed: () {
-                    Navigator.of(context).push(new MaterialPageRoute(builder: (context) => AddAudio()));
+                    Navigator.of(context).push(new MaterialPageRoute(
+                        builder: (context) => AddAudio()));
                   },
                 ),
               ],

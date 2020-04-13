@@ -25,8 +25,7 @@ class _AddAudioState extends State<AddAudio> {
 
   bool isLoading = false;
 
-
-   _showDialog(String textShow) {
+  _showDialog(String textShow) {
     // flutter defined function
     showDialog(
       context: context,
@@ -36,7 +35,6 @@ class _AddAudioState extends State<AddAudio> {
           title: new Text("Alert"),
           content: new Text(textShow),
           actions: <Widget>[
-
             new FlatButton(
               child: new Text("Ok"),
               onPressed: () {
@@ -49,124 +47,137 @@ class _AddAudioState extends State<AddAudio> {
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    appBar: AppBar(
-    title: Text('Add Motivational Audio'),
-    ),
-    body : Column(children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: GestureDetector(
-                  child: Container(
-                    height: 48.0,
-                    decoration: BoxDecoration(color: Colors.red.shade300),
-                    child: Center(
-                      child:
-                      Text(
-                        'Start Recording',
-                        style: TextStyle(color: Colors.white),
-                      ),
+      appBar: AppBar(
+        title: Text('Add Motivational Audio'),
+      ),
+      body: Column(children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            Expanded(
+              child: GestureDetector(
+                child: Container(
+                  height: 48.0,
+                  decoration: BoxDecoration(color: Colors.red.shade300),
+                  child: Center(
+                    child: Text(
+                      'Start Recording',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
-                  onTap: () async {
-                    isRecorded ? _showDialog("Please click on Reset button to Start the new Audio Recording") : startRecord();
-                  },
                 ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  child: Container(
-                    height: 48.0,
-                    decoration: BoxDecoration(color: Colors.blue.shade300),
-                    child: Center(
-                      child: Text(
-                        RecordMp3.instance.status == RecordStatus.PAUSE
-                            ? 'Resume Recording'
-                            : 'Pause Recording',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    pauseRecord();
-                  },
-                ),
-              ),
-              Expanded(
-                child: GestureDetector(
-                  child: Container(
-                    height: 48.0,
-                    decoration: BoxDecoration(color: Colors.green.shade300),
-                    child: Center(
-                      child: Text(
-                        'Stop Recording',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ),
-                  onTap: () {
-                    stopRecord();
-                  },
-                ),
-              ),
-            ],
-          ),
-          Padding(
-            padding: const EdgeInsets.only(top: 20.0),
-            child: Text(
-              statusText,
-              style: TextStyle(color: Colors.red, fontSize: 20),
-            ),
-          ),
-          GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: () {
-              play();
-            },
-            child: Container(
-              margin: EdgeInsets.only(top: 30),
-              alignment: AlignmentDirectional.center,
-              width: 100,
-              height: 50,
-              child: isComplete && recordFilePath != null
-                  ? RaisedButton(child : Text( "Play",
-                style: TextStyle(fontSize: 20,color: Colors.black),),
-
-              )
-                  : Container(),
-            ),
-          ),
-          SizedBox(height: 40,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-            Container(
-              child:   isLoading ? Center(child: CircularProgressIndicator()) : RaisedButton(
-                child: Text("Upload Audio"),
-                onPressed: () {
-
-                  if(file != null) {
-                    setState(() {
-                      isLoading = true;
-                    });
-                    _uploadAudiotoFirebase(file).whenComplete(() {
-                      setState(() {
-                        isLoading = false;
-                      });
-                    });
-                  } else {
-                    _showDialog("Please Record an Audio First in order to Upload");
-                  }
+                onTap: () async {
+                  isRecorded
+                      ? _showDialog(
+                          "Please click on Reset button to Start the new Audio Recording")
+                      : startRecord();
                 },
               ),
             ),
-            SizedBox(width: 30,),
+            Expanded(
+              child: GestureDetector(
+                child: Container(
+                  height: 48.0,
+                  decoration: BoxDecoration(color: Colors.blue.shade300),
+                  child: Center(
+                    child: Text(
+                      RecordMp3.instance.status == RecordStatus.PAUSE
+                          ? 'Resume Recording'
+                          : 'Pause Recording',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  pauseRecord();
+                },
+              ),
+            ),
+            Expanded(
+              child: GestureDetector(
+                child: Container(
+                  height: 48.0,
+                  decoration: BoxDecoration(color: Colors.green.shade300),
+                  child: Center(
+                    child: Text(
+                      'Stop Recording',
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                ),
+                onTap: () {
+                  stopRecord();
+                },
+              ),
+            ),
+          ],
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 20.0),
+          child: Text(
+            statusText,
+            style: TextStyle(color: Colors.red, fontSize: 20),
+          ),
+        ),
+        GestureDetector(
+          behavior: HitTestBehavior.opaque,
+          onTap: () {
+            play();
+          },
+          child: Container(
+            margin: EdgeInsets.only(top: 30),
+            alignment: AlignmentDirectional.center,
+            width: 100,
+            height: 50,
+            child: isComplete && recordFilePath != null
+                ? RaisedButton(
+                    child: Text(
+                      "Play",
+                      style: TextStyle(fontSize: 20, color: Colors.black),
+                    ),
+                  )
+                : Container(),
+          ),
+        ),
+        SizedBox(
+          height: 40,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              child: isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : RaisedButton(
+                      child: Text("Upload Audio"),
+                      color: Colors.cyan,
+                      textColor: Colors.white,
+                      onPressed: () {
+                        if (file != null) {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          _uploadAudiotoFirebase(file).whenComplete(() {
+                            setState(() {
+                              isLoading = false;
+                            });
+                          });
+                        } else {
+                          _showDialog(
+                              "Please Record an Audio First in order to Upload");
+                        }
+                      },
+                    ),
+            ),
+            SizedBox(
+              width: 30,
+            ),
             RaisedButton(
+              color: Colors.cyan,
+              textColor: Colors.white,
               child: Text("Reset"),
               onPressed: () {
                 _resetFiles();
@@ -174,23 +185,21 @@ class _AddAudioState extends State<AddAudio> {
                 isComplete = false;
                 recordFilePath = null;
                 file = null;
-                statusText= "";
+                statusText = "";
                 _showDialog("Reset Complete..!");
                 setState(() {});
               },
             )
-
-
-          ],)
-
-        ]),
-      );
+          ],
+        )
+      ]),
+    );
   }
 
   Future<bool> checkPermission() async {
     Map<PermissionGroup, PermissionStatus> map = await new PermissionHandler()
         .requestPermissions(
-        [PermissionGroup.storage, PermissionGroup.microphone]);
+            [PermissionGroup.storage, PermissionGroup.microphone]);
     print(map[PermissionGroup.microphone]);
     return map[PermissionGroup.microphone] == PermissionStatus.granted;
   }
@@ -260,7 +269,7 @@ class _AddAudioState extends State<AddAudio> {
 
   int i = 0;
 
-  _resetFiles() async{
+  _resetFiles() async {
     recordFilePath = await getFilePath();
     final dir = Directory(audioDirectory);
     dir.deleteSync(recursive: true);
@@ -274,7 +283,8 @@ class _AddAudioState extends State<AddAudio> {
       String audioLocation = 'audio/audio${randomNumber}.mp3';
 
       // Upload image to firebase.
-      final StorageReference storageReference = FirebaseStorage().ref().child(audioLocation);
+      final StorageReference storageReference =
+          FirebaseStorage().ref().child(audioLocation);
       final StorageUploadTask uploadTask = storageReference.putFile(audio);
       uploadTask.isInProgress;
       CircularProgressIndicator();
@@ -287,10 +297,9 @@ class _AddAudioState extends State<AddAudio> {
                 title: Text("Alert"),
                 content: Text("Audio Uploaded"),
               );
-            }
-        );
+            });
       });
-    }catch(e){
+    } catch (e) {
       print(e.message);
     }
   }
@@ -302,9 +311,12 @@ class _AddAudioState extends State<AddAudio> {
       var audioString = await ref.getDownloadURL();
 
       // Add location and url to database
-     // await Firestore.instance.collection('Posts').document().setData({'image':imageString , 'description':textAreaController.text.toString(),'createdAt' : Timestamp.now()});
-      await Firestore.instance.collection('Posts').document().setData({'audio':audioString , 'createdAt' : Timestamp.now()});
-    }catch(e){
+      // await Firestore.instance.collection('Posts').document().setData({'image':imageString , 'description':textAreaController.text.toString(),'createdAt' : Timestamp.now()});
+      await Firestore.instance
+          .collection('Posts')
+          .document()
+          .setData({'audio': audioString, 'createdAt': Timestamp.now()});
+    } catch (e) {
       print(e.message);
       showDialog(
           context: context,
@@ -312,8 +324,7 @@ class _AddAudioState extends State<AddAudio> {
             return AlertDialog(
               content: Text(e.message),
             );
-          }
-      );
+          });
     }
   }
 
@@ -328,4 +339,3 @@ class _AddAudioState extends State<AddAudio> {
     return sdPath + "/test_${i++}.mp3";
   }
 }
-

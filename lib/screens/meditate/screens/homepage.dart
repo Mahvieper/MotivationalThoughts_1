@@ -1,1511 +1,353 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 
+import 'addMeditateMusic.dart';
 import 'mentaltraining.dart';
 import 'profile.dart';
 
 
 class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.isAdmin})
+      : super(key: key);
+
+  final bool isAdmin;
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  Future snapShot;
+  List<DocumentSnapshot> documents;
+  List<String> mentalHealth = ["Managing Anxiety","Managing Depression","Managing traumatic feelings"
+  ,"Focus attention meditation for ADHD","Anger management","Healing from porn addictions",
+  "Healing from substance addictions","Stress management"];
+
+  List<String> personalGrowth = ["Empowering Men","Empowering Women","Empowering Boys","Empowering Girls",
+  "Self-care","Living your powerful life now","Finding meaning","Understanding your identity",
+  "Valuing your self","Building self-image","The power of thoughts"];
+
+  List<String> relationshipEmpowerment = ["Guidance for husband","Guidance for wife","Loving your wife",
+  "Loving your husband","Parental empowerment","Strengthen your marriage","Improving relationship with children",
+  "Improving relationship with parents"];
+
+  List<String> biblicalMindfulness = ["Scriptures for peace","Scriptures for sleep",
+  "Scriptures for comfort","Scriptures for loneliness","Scriptures for mind transformation",
+  "Focusing on the Lord's prayer","Forgiving yourself","Forgiving others","See yourself through the eyes of God"];
+
+  List<String> managingCrises = ["Hope in disappointment","Dealing with failures","Triumph and tragedy"];
+
+  Future getPosts() async {
+    var firestore = Firestore.instance;
+    QuerySnapshot snapshot = await firestore
+        .collection("Anxiety")
+        .orderBy('createdAt', descending: true)
+        .getDocuments();
+    return snapshot.documents;
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    snapShot = getPosts();
+  }
+
+  Widget _buildAudioTiles(String tileName) {
+    return  Container(
+      margin: EdgeInsets.only(right: 15.0),
+      height: 150.0,
+      width: 250.0,
+      decoration: BoxDecoration(
+
+          borderRadius: BorderRadius.only(
+            topRight:Radius.circular(10.0),
+            topLeft:Radius.circular(10.0),
+            bottomRight:Radius.circular(10.0),
+            bottomLeft: Radius.circular(10.0),
+          ),
+          image: DecorationImage(
+              image: AssetImage('assets/images/bg2.png'),
+              fit: BoxFit.fill
+          )
+
+      ),
+      child: Stack(
+        children: <Widget>[
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(height: 10.0,),
+
+              SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10.0),
+                child: Text(
+                  tileName,
+                  style: TextStyle(
+                      color: Colors.white, fontSize: 18.0),
+                ),
+              ),
+            /*  Container(
+                margin: EdgeInsets.only(left: 10.0,top:10.0),
+                child: Text(
+                  "Turn down the streets",
+                  style: TextStyle(
+                      color: Colors.white54, fontSize: 15.0),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(left: 10.0,top:20.0),
+                child: Text(
+                  "7 Steps | 5-11 min",
+                  style: TextStyle(
+                      color: Colors.white54, fontSize: 13.0),
+                ),
+              ),*/
+            ],
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              height: 100.0,
+              width: 90.0,
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage('assets/images/tree.png'),
+                  )
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+  Widget _buildTitleHeading(String heading) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: <Widget>[
+       // SizedBox(width: MediaQuery.of(context).size.width/50.0,),
+        Padding(
+          padding: const EdgeInsets.all(15.0),
+          child: Text(heading,textAlign:TextAlign.left,style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 22.0
+          ),),
+        ),
+      //  SizedBox(width: MediaQuery.of(context).size.width/1.6,),
+
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MediaQuery.of(context).orientation==Orientation.portrait? Scaffold(
+    return Scaffold(
+     // appBar: AppBar(title: Text("Meditiate"),centerTitle: true,),
         body: SingleChildScrollView(
             child: Column(
-          children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Container(
-                  height: MediaQuery.of(context).size.height / 3,
-                  width: MediaQuery.of(context).size.width / 1,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/images/Background.png'),
-                        fit: BoxFit.fill),
-                  ),
-                  child: Stack(
                     children: <Widget>[
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 30.0),
-                          height: MediaQuery.of(context).size.height / 3.9,
-                          width: MediaQuery.of(context).size.width / 6.2,
-                          child: Image(
-                            image: AssetImage('assets/images/nat1.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 20,
-                            left: 10.0),
-                        height: MediaQuery.of(context).size.height / 5.5,
-                        width: MediaQuery.of(context).size.width / 1.5,
-                        child: Row(
-                          children: <Widget>[
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                      //Stack of Images with Girl and Love and Accept Yourself
+                      Stack(
+                        children: <Widget>[
+                          Container(
+                            height: MediaQuery.of(context).size.height / 3,
+                            width: MediaQuery.of(context).size.width / 1,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image: AssetImage('assets/images/Background.png'),
+                                  fit: BoxFit.fill),
+                            ),
+                            child: Stack(
                               children: <Widget>[
-                                Text(
-                                  "DAY 7",
-                                  textAlign: TextAlign.start,
-                                  style: TextStyle(
-                                      color: Colors.white60, fontSize: 10.0),
+                                Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 30.0),
+                                    height: MediaQuery.of(context).size.height / 3.9,
+                                    width: MediaQuery.of(context).size.width / 6.2,
+                                    child: Image(
+                                      image: AssetImage('assets/images/nat1.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
-                                SizedBox(
-                                  height: 10.0,
+                                Align(alignment: Alignment.topRight,
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(0,30,30,0),
+                                    child: IconButton(
+                                      icon: Icon(Icons.arrow_back,color: Colors.white,size: 30,),
+                                      onPressed: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                    ),
+                                  ),),
+                                Container(
+                                  margin: EdgeInsets.only(
+                                      top: MediaQuery.of(context).size.height / 20,
+                                      left: 10.0),
+                                  height: MediaQuery.of(context).size.height / 5.5,
+                                  width: MediaQuery.of(context).size.width / 1.5,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 10.0,
+                                          ),
+                                          Text(
+                                            "Love And Accept",
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 25.0),
+                                          ),
+                                          Text(
+                                            "Yourself",
+                                            style: TextStyle(
+                                                color: Colors.white, fontSize: 25.0),
+                                          ),
+                                        ],
+                                      ),
+
+                                    ],
+                                  ),
                                 ),
-                                Text(
-                                  "Love And Accept",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 25.0),
-                                ),
-                                Text(
-                                  "Yourself",
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 25.0),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Container(
+                                    height: MediaQuery.of(context).size.height / 5.8,
+                                    width: MediaQuery.of(context).size.width / 3.5,
+                                    child: Image(
+                                      image: AssetImage('assets/images/nature.png'),
+                                      fit: BoxFit.fill,
+                                    ),
+                                  ),
                                 ),
                               ],
-                            )
-                          ],
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          height: MediaQuery.of(context).size.height / 5.8,
-                          width: MediaQuery.of(context).size.width / 3.5,
-                          child: Image(
-                            image: AssetImage('assets/images/nature.png'),
-                            fit: BoxFit.fill,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    margin: EdgeInsets.only(top: 100.0, right: 10.0),
-                    height: MediaQuery.of(context).size.height / 3.8,
-                    width: MediaQuery.of(context).size.width / 2,
-                    decoration: BoxDecoration(
-                        image: DecorationImage(
-                      image: AssetImage('assets/images/girl.png'),
-                      fit: BoxFit.fill,
-                    )),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height/90.0,
-            ),
-            Row(
-              children: <Widget>[
-                SizedBox(width: MediaQuery.of(context).size.width/50.0,),
-                Text("Popular",textAlign:TextAlign.left,style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 25.0
-                ),),
-                SizedBox(width: MediaQuery.of(context).size.width/1.8,),
-                GestureDetector(
-                  onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MentalTraining()));
-                  },
-                  child: Text("See All",textAlign:TextAlign.right,style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.blue
-                  ),),
-                ),
-
-              ],
-            ),
-            SingleChildScrollView(
-              padding: EdgeInsets.only(top: 5.0),
-              child: Row(
-
-                children: <Widget>[
-                  SizedBox(width: MediaQuery.of(context).size.height/60,),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                ],
-
-              ),
-              scrollDirection: Axis.horizontal,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height/90.0,
-            ),
-            Row(
-              children: <Widget>[
-                SizedBox(width: MediaQuery.of(context).size.width/50.0,),
-                Text("New",textAlign:TextAlign.left,style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    fontSize: 25.0
-                ),),
-                SizedBox(width: MediaQuery.of(context).size.width/1.6,),
-                GestureDetector(
-                  onTap: (){
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MentalTraining()));
-                  },
-                  child: Text("See All",textAlign:TextAlign.right,style: TextStyle(
-                      fontSize: 15.0,
-                      color: Colors.blue
-                  ),),
-                ),
-
-              ],
-            ),
-            SingleChildScrollView(
-              padding: EdgeInsets.only(top: 5.0),
-              child: Row(
-
-                children: <Widget>[
-                  SizedBox(width: 15.0,),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        color: Colors.deepOrangeAccent.shade100,
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    margin: EdgeInsets.only(right: 15.0),
-                    height: 150.0,
-                    width: 250.0,
-                    decoration: BoxDecoration(
-
-                        borderRadius: BorderRadius.only(
-                          topRight:Radius.circular(10.0),
-                          topLeft:Radius.circular(10.0),
-                          bottomRight:Radius.circular(10.0),
-                          bottomLeft: Radius.circular(10.0),
-                        ),
-                        image: DecorationImage(
-                            image: AssetImage('assets/images/bg2.png'),
-                            fit: BoxFit.fill
-                        )
-
-                    ),
-                    child: Stack(
-                      children: <Widget>[
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            SizedBox(height: 10.0,),
-
-                            SizedBox(
-                              height: 10.0,
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0),
-                              child: Text(
-                                "Anxiety",
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 25.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:10.0),
-                              child: Text(
-                                "Turn down the streets",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 15.0),
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.only(left: 10.0,top:20.0),
-                              child: Text(
-                                "7 Steps | 5-11 min",
-                                style: TextStyle(
-                                    color: Colors.white54, fontSize: 13.0),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Align(
-                          alignment: Alignment.bottomRight,
-                          child: Container(
-                            height: 100.0,
-                            width: 90.0,
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                  image: AssetImage('assets/images/tree.png'),
-                                )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                ],
-
-              ),
-              scrollDirection: Axis.horizontal,
-            ),
-          ],
-        )),
-        bottomNavigationBar: BottomNavigationBar(
-            showSelectedLabels: false,
-            onTap: (int val){
-              if(val==3){
-                  Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileScreen()));
-
-              }
-
-
-
-            },
-
-            showUnselectedLabels: false,
-            items: [
-              BottomNavigationBarItem(
-                  icon: Image.asset('assets/images/home.png'),
-                  title: Text('Personal')),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/images/book.png'),
-                title: Text('Notifications'),
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/images/keypad.png'),
-                title: Text('Notifications'),
-              ),
-              BottomNavigationBarItem(
-                icon: Image.asset('assets/images/group.png'),
-                title: Text('Notifications'),
-              ),
-            ])
-    ):landScapeView();
-  }
-
-  Widget landScapeView(){
-      return Scaffold(
-        body: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  Stack(
-                    children: <Widget>[
-                      Container(
-                         height: MediaQuery.of(context).size.height/1.5,
-                         width: MediaQuery.of(context).size.width/1,
-//                            color: Colors.white54,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: AssetImage('assets/images/Background.png'),
-                                fit: BoxFit.fill,
-
-                              )
-                          ),
-                      ),
-                      Align(
-                          alignment: Alignment.bottomRight,
-                        child: Container(
-                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/3.6, right: MediaQuery.of(context).size.width/8.5),
-                          height: MediaQuery.of(context).size.height/2.1,
-                          width: MediaQuery.of(context).size.width/3.2,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/girl.png')
-                              )
-                          ),
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomLeft,
-                        child: Container(
-                          margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/4.4),
-                          height: MediaQuery.of(context).size.height/1.8,
-                          width: MediaQuery.of(context).size.width/6.1,
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage('assets/images/nature.png'),
-                              fit: BoxFit.fill
-
-                            )
-                          ),
-                        ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(left: MediaQuery.of(context).size.width/5.0,top: 10.0),
-                        height: MediaQuery.of(context).size.height/2.4,
-                        width: MediaQuery.of(context).size.width/2.1,
-                        child: Row(
-                            children: <Widget>[
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: <Widget>[
-                                          Text("DAY7",
-
-                                            style: TextStyle(
-                                                 color: Colors.white60, fontSize: 15.0
-                                            ),
-                                          ),
-                                        Text("Love and Accept",
-
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 30.0
-                                          ),
-                                        ),
-                                        Text("Yourself",
-
-                                          style: TextStyle(
-                                              color: Colors.white, fontSize: 30.0
-                                          ),
-                                        ),
-
-
-                                      ],
-                                  )
-                            ],
-                        ),
-                      ),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                            margin: EdgeInsets.only(top: MediaQuery.of(context).size.height/12.0),
-                            height: MediaQuery.of(context).size.height/1.7,
-                            width:  MediaQuery.of(context).size.width/7.9,
-
-                            decoration: BoxDecoration(
+                          Align(
+                            alignment: Alignment.bottomRight,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 100.0, right: 10.0),
+                              height: MediaQuery.of(context).size.height / 3.8,
+                              width: MediaQuery.of(context).size.width / 2,
+                              decoration: BoxDecoration(
                                   image: DecorationImage(
-                                      image: AssetImage('assets/images/nat1.png'),
-                                      fit: BoxFit.fill
-                                  )
+                                    image: AssetImage('assets/images/girl.png'),
+                                    fit: BoxFit.fill,
+                                  )),
                             ),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                    children: <Widget>[
-                       SizedBox(width: MediaQuery.of(context).size.width/30.0,),
-                        Text("Anxiety",textAlign:TextAlign.left,style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 25.0
-                        ),),
-                      SizedBox(width: MediaQuery.of(context).size.width/1.4,),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MentalTraining()));
-                        },
-                        child: Text("See All",textAlign:TextAlign.right,style: TextStyle(
-                            fontSize: 20.0,
-                            color: Colors.blue
-                        ),),
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
                       ),
 
-                    ],
-                  ),
-                  SingleChildScrollView(
-                    padding: EdgeInsets.only(top: 5.0),
-                    child: Row(
-
-                      children: <Widget>[
-                        SizedBox(width: 15.0,),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
+                      _buildTitleHeading("Mental Health"),
+                      SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(width: MediaQuery.of(context).size.height/60,),
+                            for(String item in mentalHealth ) InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Mental Health",audiolistName: item,isAdmin: widget.isAdmin,)));
+                                },
+                                child: _buildAudioTiles(item)
+                            ),
+                          ],
                         ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-
-                      ],
-
-                    ),
-                    scrollDirection: Axis.horizontal,
-                  ),
-                  SizedBox(height: MediaQuery.of(context).size.height/12.0,),
-                  Row(
-                    children: <Widget>[
-                      SizedBox(width: MediaQuery.of(context).size.width/30.0,),
-                      Text("New",textAlign:TextAlign.left,style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 25.0
-                      ),),
-                      SizedBox(width: MediaQuery.of(context).size.width/1.4,),
-                      GestureDetector(
-                        onTap: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MentalTraining()));
-                        },
-
-                        child: GestureDetector(
-                          onTap: (){
-                            Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => MentalTraining()));
-                          },
-                          child: Text("See All",textAlign:TextAlign.right,style: TextStyle(
-                              fontSize: 20.0,
-                              color: Colors.blue
-                          ),),
-                        ),
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
                       ),
 
+                     _buildTitleHeading("Personal Growth"),
+                      SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(width: MediaQuery.of(context).size.height/60,),
+                            for(String item in personalGrowth ) InkWell(
+                onTap: () {
+                Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Personal Growth",audiolistName: item,isAdmin: widget.isAdmin,)));
+                },
+                                child: _buildAudioTiles(item)),
+                          ],
+                        ),
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
+                      ),
+
+                      _buildTitleHeading("Relationship Empowerment"),
+                      SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(width: MediaQuery.of(context).size.height/60,),
+                            for(String item in relationshipEmpowerment ) InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Relationship Empowerment",audiolistName: item,isAdmin: widget.isAdmin,)));
+                                },
+                                child: _buildAudioTiles(item)),
+                          ],
+                        ),
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
+                      ),
+
+                      _buildTitleHeading("Biblical Mindfulness"),
+                      SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(width: MediaQuery.of(context).size.height/60,),
+                            for(String item in biblicalMindfulness ) InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Biblical Mindfulness",audiolistName: item,isAdmin: widget.isAdmin,)));
+                                },
+                                child: _buildAudioTiles(item)),
+                          ],
+                        ),
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
+                      ),
+
+                      _buildTitleHeading("Managing Crises"),
+                      SingleChildScrollView(
+                        padding: EdgeInsets.only(top: 5.0),
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(width: MediaQuery.of(context).size.height/60,),
+                            for(String item in managingCrises ) InkWell(
+                                onTap: () {
+                                  Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Managing Crises",audiolistName: item,isAdmin: widget.isAdmin,)));
+                                },
+                                child: _buildAudioTiles(item)),
+                          ],
+                        ),
+                        scrollDirection: Axis.horizontal,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).size.height/90.0,
+                      ),
                     ],
-                  ),
-                  SingleChildScrollView(
-                    padding: EdgeInsets.only(top: 5.0),
-                    child: Row(
+                  )),
+                 );
+                }
 
-                      children: <Widget>[
-                        SizedBox(width: 15.0,),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                            color: Colors.deepOrangeAccent.shade100,
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              image: DecorationImage(
-                                  image: AssetImage('assets/images/bg2.png'),
-                                  fit: BoxFit.fill
-                              )
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                        Container(
-                          margin: EdgeInsets.only(right: 15.0),
-                          height: 150.0,
-                          width: 250.0,
-                          decoration: BoxDecoration(
-
-                              borderRadius: BorderRadius.only(
-                                topRight:Radius.circular(10.0),
-                                topLeft:Radius.circular(10.0),
-                                bottomRight:Radius.circular(10.0),
-                                bottomLeft: Radius.circular(10.0),
-                              ),
-                              color: Colors.deepOrangeAccent.shade100,
-
-                          ),
-                          child: Stack(
-                            children: <Widget>[
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: <Widget>[
-                                  SizedBox(height: 10.0,),
-
-                                  SizedBox(
-                                    height: 10.0,
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0),
-                                    child: Text(
-                                      "Anxiety",
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 25.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:10.0),
-                                    child: Text(
-                                      "Turn down the streets",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 15.0),
-                                    ),
-                                  ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10.0,top:20.0),
-                                    child: Text(
-                                      "7 Steps | 5-11 min",
-                                      style: TextStyle(
-                                          color: Colors.white54, fontSize: 13.0),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Align(
-                                alignment: Alignment.bottomRight,
-                                child: Container(
-                                  height: 100.0,
-                                  width: 90.0,
-                                  decoration: BoxDecoration(
-                                      image: DecorationImage(
-                                        image: AssetImage('assets/images/tree.png'),
-                                      )
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-
-                      ],
-
-                    ),
-                    scrollDirection: Axis.horizontal,
-                  )
-                ],
-              ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          onTap: (int value){
-            if(value==3){
-              Navigator.push(context, MaterialPageRoute(builder: (BuildContext context) => ProfileScreen()));
-
-            }
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: Image.asset('assets/images/home.png'),
-                title: Text('Personal')),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/book.png'),
-              title: Text('Notifications'),
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/keypad.png'),
-              title: Text('Notifications'),
-            ),
-            BottomNavigationBarItem(
-              icon: Image.asset('assets/images/group.png'),
-              title: Text('Notifications'),
-            ),
-          ],
-        ),
-      );
   }
-}
+

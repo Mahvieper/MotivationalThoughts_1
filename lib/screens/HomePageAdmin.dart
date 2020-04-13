@@ -404,7 +404,7 @@ class _HomePageAdminState extends State<HomePageAdmin> {
                     onTap: () {
                       pauseAllVideoAudio();
                       setState(() {});
-                      Navigator.of(context).push(new MaterialPageRoute(builder: (context) =>MeditatePage()));
+                      Navigator.of(context).push(new MaterialPageRoute(builder: (context) =>MeditatePage(isAdmin: widget.isAdmin,)));
                     },
                     child: Container(
                       decoration: new BoxDecoration(

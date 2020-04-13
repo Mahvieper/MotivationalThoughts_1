@@ -21,7 +21,6 @@ class _AddPostState extends State<AddPost> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
-
     //display image selected from gallery
     imageSelectorGallery() async {
       galleryFile = await ImagePicker.pickImage(
@@ -33,19 +32,28 @@ class _AddPostState extends State<AddPost> {
       setState(() {});
     }
 
-
     //Button to slect image from gallary
     Widget _imageSelector() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Text("Please Select an Image",style: TextStyle(color: Colors.black),),
-          SizedBox(width: 30,),
+          Text(
+            "Please Select an Image",
+            style: TextStyle(color: Colors.black),
+          ),
+          SizedBox(
+            width: 30,
+          ),
           RaisedButton(
-            child: new Text('Select Image from Gallery',style: TextStyle(color: Colors.black),),
+            color: Colors.cyan,
+            textColor: Colors.white,
+            child: new Text(
+              'Select Image from Gallery',
+            ),
             onPressed: imageSelectorGallery,
           ),
-        ],);
+        ],
+      );
     }
 
     Widget _textArea() {
@@ -58,14 +66,15 @@ class _AddPostState extends State<AddPost> {
               border: new OutlineInputBorder(
                 borderSide: new BorderSide(color: Colors.teal),
               ),
-              hintText: 'Enter the Motivational Thought'
-          ),
+              hintText: 'Enter the Motivational Thought'),
         ),
       );
     }
 
     return Scaffold(
-      appBar: AppBar(title: Text("Add Motivational Thought"),),
+      appBar: AppBar(
+        title: Text("Add Motivational Thought"),
+      ),
       body: Center(
         child: Container(
           child: SingleChildScrollView(
@@ -73,41 +82,53 @@ class _AddPostState extends State<AddPost> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 _imageSelector(),
-                SizedBox(height: 20,),
-               displaySelectedFile(galleryFile),
-              SizedBox(height: 10,),
+                SizedBox(
+                  height: 20,
+                ),
+                displaySelectedFile(galleryFile),
+                SizedBox(
+                  height: 10,
+                ),
                 _textArea(),
-                SizedBox(height: 10,),
-               isLoading ? Center(child: CircularProgressIndicator()) : RaisedButton(child: Text("Add thought"),
-                onPressed: () {
-                 setState(() {
-                   isLoading = true;
-                 });
-                  if( galleryFile !=null && textAreaController.text.isNotEmpty) {
-                    _uploadImageToFirebase(galleryFile).whenComplete(() {
-                      setState(() {
-                        isLoading = false;
-                      });
-                    });
-                  } else {
-                    showDialog(
-                        context: context,
-                        builder: (context) {
-                          return AlertDialog(
-                            title: Text("Alert"),
-                            content: Text("Please check if Image and Quote have been entered Correctly..!"),
-                          );
-                        }
-                    );
-                  }
-                },)
-                ,
+                SizedBox(
+                  height: 10,
+                ),
+                isLoading
+                    ? Center(child: CircularProgressIndicator())
+                    : RaisedButton(
+                        color: Colors.cyan,
+                        textColor: Colors.white,
+                        child: Text("Add thought"),
+                        onPressed: () {
+                          setState(() {
+                            isLoading = true;
+                          });
+                          if (galleryFile != null &&
+                              textAreaController.text.isNotEmpty) {
+                            _uploadImageToFirebase(galleryFile)
+                                .whenComplete(() {
+                              setState(() {
+                                isLoading = false;
+                              });
+                            });
+                          } else {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    title: Text("Alert"),
+                                    content: Text(
+                                        "Please check if Image and Quote have been entered Correctly..!"),
+                                  );
+                                });
+                          }
+                        },
+                      ),
               ],
             ),
           ),
         ),
       ),
-
     );
   }
 
@@ -117,9 +138,11 @@ class _AddPostState extends State<AddPost> {
 //child: new Image.file(galleryFile),
       child: file == null
           ? new Text('Sorry nothing selected!!')
-          : new Image.file(file,
-        height: 200.0,
-        width: 300.0,),
+          : new Image.file(
+              file,
+              height: 200.0,
+              width: 300.0,
+            ),
     );
   }
 
@@ -130,10 +153,11 @@ class _AddPostState extends State<AddPost> {
       String imageLocation = 'image${randomNumber}.jpg';
 
       // Upload image to firebase.
-      final StorageReference storageReference = FirebaseStorage().ref().child(imageLocation);
+      final StorageReference storageReference =
+          FirebaseStorage().ref().child(imageLocation);
       final StorageUploadTask uploadTask = storageReference.putFile(image);
       uploadTask.isInProgress;
-       CircularProgressIndicator();
+      CircularProgressIndicator();
       await uploadTask.onComplete;
       _addPathToDatabase(imageLocation).whenComplete(() {
         showDialog(
@@ -143,10 +167,9 @@ class _AddPostState extends State<AddPost> {
                 title: Text("Alert"),
                 content: Text("Post Uploaded"),
               );
-            }
-        );
+            });
       });
-    }catch(e){
+    } catch (e) {
       print(e.message);
     }
   }
@@ -158,8 +181,12 @@ class _AddPostState extends State<AddPost> {
       var imageString = await ref.getDownloadURL();
 
       // Add location and url to database
-      await Firestore.instance.collection('Posts').document().setData({'image':imageString , 'description':textAreaController.text.toString(),'createdAt' : Timestamp.now()});
-    }catch(e){
+      await Firestore.instance.collection('Posts').document().setData({
+        'image': imageString,
+        'description': textAreaController.text.toString(),
+        'createdAt': Timestamp.now()
+      });
+    } catch (e) {
       print(e.message);
       showDialog(
           context: context,
@@ -167,8 +194,7 @@ class _AddPostState extends State<AddPost> {
             return AlertDialog(
               content: Text(e.message),
             );
-          }
-      );
+          });
     }
   }
 }
