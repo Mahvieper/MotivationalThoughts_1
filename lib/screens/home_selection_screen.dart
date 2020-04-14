@@ -95,6 +95,7 @@ class _HomePageSelectionState extends State<HomePageSelection> {
             ),
           ),
 /*
+
         new Positioned( //Place it at the top, and not use the entire screen
         top: 0.0,
         left: 0.0,
@@ -137,6 +138,8 @@ class _HomePageSelectionState extends State<HomePageSelection> {
           ),
     ),*/
 
+
+
           FutureBuilder(
             future: snapShot,
             builder: (context, snapshot) {
@@ -172,8 +175,22 @@ class _HomePageSelectionState extends State<HomePageSelection> {
               }
             },
           ),
+
+          Container(
+            margin: EdgeInsets.only(top: 30),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: IconButton(icon: Icon(Icons.arrow_back,color: Colors.white,),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ),
+          ),
         ],
       ),
+
+
       floatingActionButton: widget.isAdmin ? FloatingActionButton(
         onPressed: () {
           // Add your onPressed code here!

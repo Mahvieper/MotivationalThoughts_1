@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -38,6 +40,10 @@ class _MyHomePageState extends State<MyHomePage> {
 
   List<String> managingCrises = ["Hope in disappointment","Dealing with failures","Triumph and tragedy"];
 
+  List<String> backAssets = ["assets/back/auntm.png","assets/back/cloud.png","assets/back/flowers.png","assets/back/green.png","assets/back/leaves.png"
+  ,"assets/back/road.png","assets/back/sunRiseWater.png","assets/back/sunset.png","assets/back/sunWoods.png",
+  "assets/back/way.png"];
+
   Future getPosts() async {
     var firestore = Firestore.instance;
     QuerySnapshot snapshot = await firestore
@@ -54,7 +60,13 @@ class _MyHomePageState extends State<MyHomePage> {
     snapShot = getPosts();
   }
 
-  Widget _buildAudioTiles(String tileName) {
+  Widget _buildAudioTiles(String tileName,int index) {
+    if(index!=null) {
+      var rng = new Random();
+      index = rng.nextInt(backAssets.length);
+    }
+
+    int newIndex = index % backAssets.length;
     return  Container(
       margin: EdgeInsets.only(right: 15.0),
       height: 150.0,
@@ -68,7 +80,7 @@ class _MyHomePageState extends State<MyHomePage> {
             bottomLeft: Radius.circular(10.0),
           ),
           image: DecorationImage(
-              image: AssetImage('assets/images/bg2.png'),
+              image: AssetImage(backAssets[newIndex]),
               fit: BoxFit.fill
           )
 
@@ -78,17 +90,25 @@ class _MyHomePageState extends State<MyHomePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              SizedBox(height: 10.0,),
+             // SizedBox(height: 10.0,),
 
-              SizedBox(
+              /*SizedBox(
                 height: 10.0,
-              ),
-              Container(
-                margin: EdgeInsets.only(left: 10.0),
-                child: Text(
-                  tileName,
-                  style: TextStyle(
-                      color: Colors.white, fontSize: 18.0),
+              ),*/
+
+              ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: ColorFiltered(
+                  colorFilter: ColorFilter.mode(Colors.white70.withOpacity(0.7), BlendMode.dstATop),
+                  child: Container(
+                    padding: EdgeInsets.all(10),
+                    //margin: EdgeInsets.only(left: 10.0),
+                    child: Text(
+                      tileName,
+                      style: TextStyle(
+                          color: Colors.black, fontSize: 18.0),
+                    ),
+                  ),
                 ),
               ),
             /*  Container(
@@ -109,7 +129,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),*/
             ],
           ),
-          Align(
+        /*  Align(
             alignment: Alignment.bottomRight,
             child: Container(
               height: 100.0,
@@ -120,7 +140,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   )
               ),
             ),
-          )
+          )*/
         ],
       ),
     );
@@ -259,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onTap: () {
                                   Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Mental Health",audiolistName: item,isAdmin: widget.isAdmin,)));
                                 },
-                                child: _buildAudioTiles(item)
+                                child: _buildAudioTiles(item,mentalHealth.indexOf(item))
                             ),
                           ],
                         ),
@@ -279,7 +299,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {
                 Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Personal Growth",audiolistName: item,isAdmin: widget.isAdmin,)));
                 },
-                                child: _buildAudioTiles(item)),
+                                child:_buildAudioTiles(item,personalGrowth.indexOf(item))),
                           ],
                         ),
                         scrollDirection: Axis.horizontal,
@@ -298,7 +318,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onTap: () {
                                   Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Relationship Empowerment",audiolistName: item,isAdmin: widget.isAdmin,)));
                                 },
-                                child: _buildAudioTiles(item)),
+                                child: _buildAudioTiles(item,relationshipEmpowerment.indexOf(item))),
                           ],
                         ),
                         scrollDirection: Axis.horizontal,
@@ -317,7 +337,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onTap: () {
                                   Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Biblical Mindfulness",audiolistName: item,isAdmin: widget.isAdmin,)));
                                 },
-                                child: _buildAudioTiles(item)),
+                                child: _buildAudioTiles(item,biblicalMindfulness.indexOf(item))),
                           ],
                         ),
                         scrollDirection: Axis.horizontal,
@@ -336,7 +356,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 onTap: () {
                                   Navigator.of(context).push(new MaterialPageRoute(builder: (context)=> MentalTraining(titleHead: "Managing Crises",audiolistName: item,isAdmin: widget.isAdmin,)));
                                 },
-                                child: _buildAudioTiles(item)),
+                                child: _buildAudioTiles(item,managingCrises.indexOf(item))),
                           ],
                         ),
                         scrollDirection: Axis.horizontal,
