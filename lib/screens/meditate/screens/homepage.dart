@@ -177,13 +177,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             height: MediaQuery.of(context).size.height / 3,
                             width: MediaQuery.of(context).size.width / 1,
                             decoration: BoxDecoration(
+                              color: Colors.white70,
                               image: DecorationImage(
-                                  image: AssetImage('assets/images/Background.png'),
-                                  fit: BoxFit.fill),
+                                  image: AssetImage('assets/MindRenewal.png'),
+                                  fit: BoxFit.fitWidth),
                             ),
                             child: Stack(
                               children: <Widget>[
-                                Align(
+                               /* Align(
                                   alignment: Alignment.topRight,
                                   child: Container(
                                     margin: EdgeInsets.only(top: 30.0),
@@ -194,18 +195,18 @@ class _MyHomePageState extends State<MyHomePage> {
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                ),
+                                ),*/
                                 Align(alignment: Alignment.topRight,
                                   child: Padding(
-                                    padding: const EdgeInsets.fromLTRB(0,30,30,0),
+                                    padding: const EdgeInsets.fromLTRB(0,30,10,0),
                                     child: IconButton(
-                                      icon: Icon(Icons.arrow_back,color: Colors.white,size: 30,),
+                                      icon: Icon(Icons.arrow_back,color: Colors.black,size: 30,),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
                                     ),
                                   ),),
-                                Container(
+                                /*Container(
                                   margin: EdgeInsets.only(
                                       top: MediaQuery.of(context).size.height / 20,
                                       left: 10.0),
@@ -235,8 +236,8 @@ class _MyHomePageState extends State<MyHomePage> {
 
                                     ],
                                   ),
-                                ),
-                                Align(
+                                ),*/
+                                /*Align(
                                   alignment: Alignment.bottomLeft,
                                   child: Container(
                                     height: MediaQuery.of(context).size.height / 5.8,
@@ -246,11 +247,11 @@ class _MyHomePageState extends State<MyHomePage> {
                                       fit: BoxFit.fill,
                                     ),
                                   ),
-                                ),
+                                ),*/
                               ],
                             ),
                           ),
-                          Align(
+                         /* Align(
                             alignment: Alignment.bottomRight,
                             child: Container(
                               margin: EdgeInsets.only(top: 100.0, right: 10.0),
@@ -262,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     fit: BoxFit.fill,
                                   )),
                             ),
-                          ),
+                          ),*/
                         ],
                       ),
                       SizedBox(

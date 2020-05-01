@@ -258,7 +258,7 @@ class _HomePageSelectionState extends State<HomePageSelection> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                " \n- Dr.Courtney",
+                                " \n- Dr.Dookie",
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,
